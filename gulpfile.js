@@ -30,6 +30,8 @@ const html_files = [
 ]
 
 const js_files = [
+    '!' + conf.src + '/livereload.js',
+    '!' + conf.dest + '/livereload.js',
     '!' + conf.src + '/**/*.map',
     conf.src + '/**/*.js',
     conf.src + '/*.js',
@@ -127,7 +129,10 @@ function browser_sync() {
 }
 
 function js() {
-    return gulp.src(js_files)
+    // console.log(js_files);
+
+    // return gulp.src(js_files)
+    return gulp.src(conf.src + '/main.js')
         .pipe(webpack(webpack_config).on("error", notify.onError(function(error) {
             return "Error webpack: " + error.message;
         })).on('error', emit_end))
