@@ -51,4 +51,8 @@ li {
 a {
 	color: #42b983;
 }
+
+a.router-link-active {
+    color: #ffc000 !important;
+}
 </style>

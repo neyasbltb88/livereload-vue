@@ -1,6 +1,5 @@
 <template>
-    <!-- TODO: Реализовать работу с классами, чтобы выделялась ссылка на текущий роут -->
-    <a href="!#" @click.prevent="goTo">
+    <a href="!#" @click.prevent="goTo" class="go-to router-link" :class="_activeClass">
         <slot></slot>
     </a>
 </template>
@@ -8,10 +7,31 @@
 <script>
 export default {
     name: 'goTo',
-    props: { to: String }, // Имя роута
+    props: { 
+        to: String, // Имя роута
+        activeClass: String
+    }, 
     data() {
         return {
             matcher: this.$router.matcher.match,
+        }
+    },
+    computed: {
+        _isActive() {
+            let active = false;
+            let match = this.matcher(this.$route).matched[0];
+
+            if(match !== undefined && match.name === this.to) {
+                active = true;
+            }
+
+            return active;
+        },
+        _activeClass() {
+            let className = '';
+            if(this._isActive) className = this.activeClass || 'router-link-active';
+            
+            return className;
         }
     },
     methods: {
