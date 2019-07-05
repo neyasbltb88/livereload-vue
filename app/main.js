@@ -14,7 +14,7 @@ window.navWatcher = new NavWatcher({
 
 // Создаем блок, в который будет монтироваться приложение
 let appElem = document.createElement('div')
-appElem.id = 'app'
+appElem.id = 'appVue'
 
 // и добавляем его в конец body
 document.body.appendChild(appElem)
@@ -23,4 +23,4 @@ window.vm = new Vue({
     router,
     store,
     render: h => h(App)
-}).$mount('#app')
+}).$mount('#appVue')

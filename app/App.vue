@@ -1,15 +1,20 @@
 <template>
-	<div id="app">
-		<img alt="Vue logo" src="./assets/logo.png">
+	<div id="appVue">
+		<img alt="Vue logo" 
+            src="./assets/logo.png" 
+            class="logo"
+            @click="goHome">
 		<!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
 		<h3>Навигация</h3>
 		<ul>
 			<li>
-				<!-- TODO: Реализовать передачу произвольных параметров -->
-				<go-to to="HelloWorld">HelloWorld</go-to>
+				<go-to :to="{name: 'HelloWorld'}">HelloWorld</go-to>
 			</li>
 			<li>
 				<go-to to="RouterTest">RouterTest</go-to>
+			</li>
+            <li>
+				<go-to to="RouterTest" remember="false">RouterTest (not remember)</go-to>
 			</li>
 		</ul>
 
@@ -18,23 +23,63 @@
 </template>
 
 <script>
+import SStorage from './scripts/sstorage'
+import { mapMutations } from 'vuex';
+
 import GoTo from './GoTo.vue';
 
 
 export default {
-	name: 'app',
-	components: { GoTo },
-	methods: { }
+    name: 'app',
+    data() {
+        return {
+            appName: 'appVue',
+            defaultRouteName: 'HelloWorld'
+        }
+    },
+    components: { GoTo },
+    computed: { },
+    methods: {
+        ...mapMutations(['setAppName', 'setSStorage']),
+        goHome() {
+            this.$store.getters.goTo('HelloWorld', {page_: '123'}, {admin: true});
+        }
+    },
+    created() {
+        // Заносим имя приложения в store
+        this.setAppName(this.appName);
+
+        // Инициализируем хранилище в localStorage
+        let sstorage = new SStorage(this.appName, {
+            route: {
+                name: this.defaultRouteName,
+                params: { page: '_' },
+                query: {}
+            }
+        });
+        this.setSStorage(sstorage);
+
+        // Если режим роутера 'abstract', то делаем переход на роут, сохраненный в localStorage
+        if(this.$router.mode === 'abstract') {
+            let restoreRoute = sstorage.get('route');
+            this.$router.replace(restoreRoute)
+        }
+        
+    }
 }
 </script>
 
 <style scoped lang="scss">
-#app {
+#appVue {
 	font-family: 'Avenir', Helvetica, Arial, sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	text-align: center;
 	color: #2c3e50;
+}
+
+.logo {
+    cursor: pointer;
 }
 
 h3 {
