@@ -2,9 +2,21 @@ import Vue from 'vue'
 import App from './App.vue'
 import store from './store'
 import router from './router'
-import NavWatcher from './scripts/nav-watcher';
+import NavWatcher from './scripts/nav-watcher'
 
 Vue.config.productionTip = false
+
+// Имя приложения
+const APP_NAME = 'appVue'
+
+// С помощью глобального миксина добавляем APP_NAME в data всех компонентов
+Vue.mixin({
+    data() {
+        return {
+            APP_NAME
+        }
+    }
+})
 
 // Декоратор роутера VK
 // TODO: скорее всего он тут не будет нужен
@@ -14,13 +26,18 @@ window.navWatcher = new NavWatcher({
 
 // Создаем блок, в который будет монтироваться приложение
 let appElem = document.createElement('div')
-appElem.id = 'appVue'
-
-// и добавляем его в конец body
+    // id корневого элемента приложения будет соответствовать имени приложения
+appElem.id = APP_NAME
+    // и добавляем его в конец body
 document.body.appendChild(appElem)
 
-window.vm = new Vue({
+// Сохраняем экземпляр приложения в глобальную переменную под именем приложения
+window[APP_NAME] = new Vue({
     router,
     store,
+    created() {
+        // Заносим имя приложения в store
+        this.$store.commit('setAppName', APP_NAME)
+    },
     render: h => h(App)
-}).$mount('#appVue')
+}).$mount(`#${APP_NAME}`)

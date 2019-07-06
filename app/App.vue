@@ -1,10 +1,10 @@
 <template>
-	<div id="appVue">
+	<div :id="APP_NAME" class="appVue">
 		<img alt="Vue logo" 
             src="./assets/logo.png" 
             class="logo"
             @click="goHome">
-		<!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
+
 		<h3>Навигация</h3>
 		<ul>
 			<li>
@@ -33,24 +33,20 @@ export default {
     name: 'app',
     data() {
         return {
-            appName: 'appVue',
             defaultRouteName: 'HelloWorld'
         }
     },
     components: { GoTo },
     computed: { },
     methods: {
-        ...mapMutations(['setAppName', 'setSStorage']),
+        ...mapMutations(['setSStorage']),
         goHome() {
             this.$store.getters.goTo('HelloWorld', {page_: '123'}, {admin: true});
         }
     },
     created() {
-        // Заносим имя приложения в store
-        this.setAppName(this.appName);
-
-        // Инициализируем хранилище в localStorage
-        let sstorage = new SStorage(this.appName, {
+        // Инициализируем хранилище в localStorage с ключом по имени приложения
+        let sstorage = new SStorage(this.APP_NAME, {
             route: {
                 name: this.defaultRouteName,
                 params: { page: '_' },
@@ -70,7 +66,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-#appVue {
+.appVue {
 	font-family: 'Avenir', Helvetica, Arial, sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
